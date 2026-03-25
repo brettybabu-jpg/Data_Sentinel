@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DataSentinel Chatbot</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+}
+
+#chatbox {
+    width: 400px;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px gray;
+}
+
+#messages {
+    height: 300px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.user {
+    text-align: right;
+    color: blue;
+}
+
+.bot {
+    text-align: left;
+    color: green;
+}
+
+input {
+    width: 75%;
+    padding: 10px;
+}
+
+button {
+    padding: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="chatbox">
+    <h3>DataSentinel</h3>
+
+    <div id="messages"></div>
+
+    <input id="msg" placeholder="Ask something..." />
+    <button onclick="send()">Send</button>
+</div>
+
+<script>
+async function send() {
+    let message = document.getElementById("msg").value;
+    if (!message) return;
+
+    let res = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message})
+    });
+
+    let data = await res.json();
+
+    let chat = document.getElementById("messages");
+
+    chat.innerHTML += `<p class="user"><b>You:</b> ${message}</p>`;
+    chat.innerHTML += `<p class="bot"><b>Bot:</b> ${data.reply}</p>`;
+
+    document.getElementById("msg").value = "";
+    chat.scrollTop = chat.scrollHeight;
+}
+</script>
+
+</body>
+</html>
